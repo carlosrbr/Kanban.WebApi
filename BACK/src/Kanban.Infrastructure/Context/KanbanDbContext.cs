@@ -1,8 +1,8 @@
-﻿using Kanban.Domain.Entities;
-using Microsoft.EntityFrameworkCore;
-
-namespace Kanban.Infrastructure.Data.Context
+﻿namespace Kanban.Infrastructure.Data.Context
 {
+    using Kanban.Domain.Entities;
+    using Microsoft.EntityFrameworkCore;
+
     public class KanbanDbContext : DbContext
     {
         public KanbanDbContext(DbContextOptions<KanbanDbContext> options)
@@ -12,3 +12,4 @@ namespace Kanban.Infrastructure.Data.Context
         public DbSet<Card> Cards { get; set; }
     }
 }
+ 

@@ -1,14 +1,14 @@
 version: '3.9'
 services:
-  backend:
-    build:
-      dockerfile: Dockerfile
-    ports:
-      - "5000:5000"
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=http://0.0.0.0:5000
-      - JWT_SECRET=carlosrobertosecret_e10dc5f4-82e3-49c1-8307-163071d75ef7
+  # backend:
+  #   build:
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "5000:5000"
+  #   environment:
+  #     - ASPNETCORE_ENVIRONMENT=Development
+  #     - ASPNETCORE_URLS=http://0.0.0.0:5000
+  #     - JWT_SECRET=carlosrobertosecret_e10dc5f4-82e3-49c1-8307-163071d75ef7
 
   frontend:
     build:

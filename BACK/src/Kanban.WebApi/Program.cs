@@ -10,12 +10,12 @@ namespace webapi_kanban
     using Kanban.Domain.Validators;
     using Kanban.Infrastructure.Data.Context;
     using Kanban.Infrastructure.Data.Repository;
-    using Microsoft.AspNetCore.Authentication.JwtBearer;
+    using Microsoft.AspNetCore.Authentication.JwtBearer;    
     using Microsoft.EntityFrameworkCore;
     using Microsoft.IdentityModel.Tokens;
     using webapi_kanban.Middlewares;
 
-    public class Program
+    public partial class Program
     {
         public static void Main(string[] args)
         {
@@ -30,7 +30,7 @@ namespace webapi_kanban
                 options.AddPolicy(name: corsName,
                                   policy =>
                                   {
-                                      policy.AllowAnyOrigin()
+                                      policy.WithOrigins("http://localhost:3000")
                                           .AllowAnyHeader()
                                           .AllowAnyMethod();
                                   });
@@ -45,7 +45,7 @@ namespace webapi_kanban
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            builder.Services.AddScoped<ICardService, CardService>();
+            builder.Services.AddScoped<ICardService, CardService>(); 
             builder.Services.AddScoped<ICardRepository, CardRepository>();
             builder.Services.AddScoped<IValidator<Card>, CardValidator>();
 
@@ -78,7 +78,6 @@ namespace webapi_kanban
             }
 
             //app.UseHttpsRedirection();
-
             app.UseMiddleware<LoggingMiddleware>();
 
             app.UseCors(corsName);

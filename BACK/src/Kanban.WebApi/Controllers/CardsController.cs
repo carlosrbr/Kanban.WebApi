@@ -3,8 +3,10 @@
     using Kanban.Application;
     using Kanban.Domain.Entities;
     using Kanban.Domain.Interfaces.Service;
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
 
+    [Authorize]
     [ApiController]
     [Route("[controller]")]
     public class CardsController : ControllerBase
@@ -50,7 +52,7 @@
                 return NotFound();
             }
 
-            if (existingCard.Id == card.Id)
+            if (existingCard.Id != card.Id)
             {
                 return BadRequest();
             }

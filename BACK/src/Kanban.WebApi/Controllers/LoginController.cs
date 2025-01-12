@@ -3,9 +3,11 @@
     using System.IdentityModel.Tokens.Jwt;
     using System.Security.Claims;
     using System.Text;
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.IdentityModel.Tokens;
     using webapi_kanban.dto;
+
 
     [ApiController]
     [Route("[controller]")]
@@ -21,7 +23,7 @@
             if (request.Login == login && request.Senha == password)
             {
                 var token = GenerateJwtToken();
-                return Ok(new { token });
+                return Ok(token);
             }
 
             return Unauthorized();

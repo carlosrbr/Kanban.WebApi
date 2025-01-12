@@ -11,10 +11,10 @@ COPY . .
 
 RUN dotnet restore ./BACK/backend.sln
 
-RUN dotnet build ./BACK/backend.sln -c $BUILD_CONFIGURATION -o /app/build
+RUN dotnet build ./BACK/backend.sln -c release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish ./BACK/backend.sln -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish ./BACK/backend.sln -c release -o /app/publish
 
 FROM base AS final
 WORKDIR /app

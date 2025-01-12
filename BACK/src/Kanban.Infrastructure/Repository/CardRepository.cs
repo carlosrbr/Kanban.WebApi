@@ -1,9 +1,9 @@
-﻿using Kanban.Domain.Entities;
-using Kanban.Domain.Interfaces.Repository;
-using Kanban.Infrastructure.Data.Context;
-
-namespace Kanban.Infrastructure.Data.Repository
+﻿namespace Kanban.Infrastructure.Data.Repository
 {
+    using Kanban.Domain.Entities;
+    using Kanban.Domain.Interfaces.Repository;
+    using Kanban.Infrastructure.Data.Context;
+
     public class CardRepository : ICardRepository
     {
         private readonly KanbanDbContext _context;
@@ -54,7 +54,7 @@ namespace Kanban.Infrastructure.Data.Repository
             _context.Cards.Update(obj);
             _context.SaveChanges();
             return obj;
-        }
+        } 
 
         public void Dispose()
         {

@@ -11,7 +11,7 @@
                 .NotEmpty().WithMessage("O Id não pode ser vazio.");
 
             RuleFor(card => card.Titulo)
-                .NotEmpty().WithMessage("Titulo é obrigatório.")
+                .NotEmpty().WithMessage(" ")
                 .MinimumLength(3).WithMessage("Titulo deve ter ao meno 3 caracteres.");
 
             RuleFor(card => card.Conteudo)
@@ -24,3 +24,4 @@
         }
     }
 }
+ 

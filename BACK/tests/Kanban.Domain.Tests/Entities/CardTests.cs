@@ -1,4 +1,4 @@
-﻿namespace Kanban.Infrastructure.Data.Interfaces
+﻿namespace Kanban.Domain.Tests.Entities
 {
     using System;
     using System.Collections.Generic;
@@ -6,7 +6,7 @@
     using System.Text;
     using System.Threading.Tasks;
 
-    internal interface IUnitOfWork
+    internal class CardTests
     {
     }
 }
