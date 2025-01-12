@@ -4,13 +4,15 @@ namespace webapi_kanban
     using DotNetEnv;
     using FluentValidation;
     using Kanban.Application;
+    using Kanban.Application.AutoMapperProfile;
+    using Kanban.Application.Interfaces;
     using Kanban.Domain.Entities;
     using Kanban.Domain.Interfaces.Repository;
     using Kanban.Domain.Interfaces.Service;
     using Kanban.Domain.Validators;
     using Kanban.Infrastructure.Data.Context;
     using Kanban.Infrastructure.Data.Repository;
-    using Microsoft.AspNetCore.Authentication.JwtBearer;    
+    using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.IdentityModel.Tokens;
     using webapi_kanban.Middlewares;
@@ -45,9 +47,11 @@ namespace webapi_kanban
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            builder.Services.AddScoped<ICardService, CardService>(); 
+            builder.Services.AddScoped<ICardService, CardService>();
+            builder.Services.AddScoped<ICardAppService, CardAppService>(); 
             builder.Services.AddScoped<ICardRepository, CardRepository>();
             builder.Services.AddScoped<IValidator<Card>, CardValidator>();
+            builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 
             // Configurar serviços

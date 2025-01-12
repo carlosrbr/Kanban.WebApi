@@ -23,4 +23,8 @@
     <ProjectReference Include="..\..\src\Kanban.Domain\Kanban.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Validators\" />
+  </ItemGroup>
+
 </Project>

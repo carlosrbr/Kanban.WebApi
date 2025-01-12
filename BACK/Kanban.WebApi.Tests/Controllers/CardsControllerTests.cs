@@ -1,7 +1,7 @@
 ﻿namespace webapi_kanban.Tests.Controllers
 {
-    using Kanban.Application;
-    using Kanban.Domain.Entities;
+    using Kanban.Application.Interfaces;
+    using Kanban.Application.ViewModels;
     using Kanban.Domain.Interfaces.Service;
     using Microsoft.AspNetCore.Mvc;
     using Moq;
@@ -9,12 +9,12 @@
 
     public class CardsControllerTests
     {
-        private readonly Mock<ICardService> _mockCardService;
+        private readonly Mock<ICardAppService> _mockCardService;
         private readonly CardsController _controller;
 
         public CardsControllerTests()
         {
-            _mockCardService = new Mock<ICardService>();
+            _mockCardService = new Mock<ICardAppService>();
             _controller = new CardsController(_mockCardService.Object);
         }
 
@@ -22,10 +22,10 @@
         public void GetCards_ShouldReturnOkResult_WithListOfCards()
         {
             // Arrange
-            var cards = new List<Card>
+            var cards = new List<CardViewModel>
             {
-                new Card { Id = Guid.NewGuid(), Titulo = "Test1", Conteudo = "Content1", Lista = "ToDo" },
-                new Card { Id = Guid.NewGuid(), Titulo = "Test2", Conteudo = "Content2", Lista = "Doing" }
+                new CardViewModel { Id = Guid.NewGuid(), Titulo = "Test1", Conteudo = "Content1", Lista = "ToDo" },
+                new CardViewModel { Id = Guid.NewGuid(), Titulo = "Test2", Conteudo = "Content2", Lista = "Doing" }
             };
             _mockCardService.Setup(s => s.GetAll()).Returns(cards);
 
@@ -42,8 +42,8 @@
         public void CreateCard_ShouldReturnCreatedAtAction_WhenCardIsValid()
         {
             // Arrange
-            var newCard = new Card { Id = Guid.NewGuid(), Titulo = "Test", Conteudo = "Content", Lista = "Done" };
-            var resultModel = new Result<Card> { Success = true, Model = newCard };
+            var newCard = new CardViewModel { Id = Guid.NewGuid(), Titulo = "Test", Conteudo = "Content", Lista = "Done" };
+            var resultModel = new Result<CardViewModel> { Success = true, Model = newCard };
             _mockCardService.Setup(s => s.Add(newCard)).Returns(resultModel);
 
             // Act
@@ -59,8 +59,8 @@
         public void CreateCard_ShouldReturnBadRequest_WhenCardIsInvalid()
         {
             // Arrange
-            var newCard = new Card { Id = Guid.NewGuid(), Titulo = "", Conteudo = "Content", Lista = "ToDo" };
-            var resultModel = new Result<Card> { Success = false, Errors = new List<string> { "Title is required." } };
+            var newCard = new CardViewModel { Id = Guid.NewGuid(), Titulo = "", Conteudo = "Content", Lista = "ToDo" };
+            var resultModel = new Result<CardViewModel> { Success = false, Errors = new List<string> { "Title is required." } };
             _mockCardService.Setup(s => s.Add(newCard)).Returns(resultModel);
 
             // Act
@@ -77,16 +77,16 @@
         {
             // Arrange
             var cardId = Guid.NewGuid();
-            var existingCard = new Card { Id = cardId, Titulo = "Old", Conteudo = "OldContent", Lista = "ToDo" };
-            var updatedCard = new Card { Id = cardId, Titulo = "Updated", Conteudo = "UpdatedContent", Lista = "Done" };
+            var existingCard = new CardViewModel { Id = cardId, Titulo = "Old", Conteudo = "OldContent", Lista = "ToDo" };
+            var updatedCard = new CardViewModel { Id = cardId, Titulo = "Updated", Conteudo = "UpdatedContent", Lista = "Done" };
 
             _mockCardService.Setup(s => s.FindById(cardId)).Returns(existingCard);
-            _mockCardService.Setup(s => s.Update(existingCard)).Returns(new Result<Card> { Success = true , Model = updatedCard });
+            _mockCardService.Setup(s => s.Update(existingCard)).Returns(new Result<CardViewModel>() { Success = true , Model = updatedCard });
 
             // Act
             var result = _controller.UpdateCard(cardId, updatedCard);
 
-            // Assert
+            // Assert   
             var okResult = Assert.IsType<OkObjectResult>(result);
             Assert.Equal(200, okResult.StatusCode);
             Assert.Equal(updatedCard, okResult.Value);
@@ -97,9 +97,9 @@
         {
             // Arrange
             var cardId = Guid.NewGuid();
-            var updatedCard = new Card { Id = cardId, Titulo = "Updated", Conteudo = "UpdatedContent", Lista = "Done" };
+            var updatedCard = new CardViewModel { Id = cardId, Titulo = "Updated", Conteudo = "UpdatedContent", Lista = "Done" };
 
-            _mockCardService.Setup(s => s.FindById(cardId)).Returns((Card)null);
+            _mockCardService.Setup(s => s.FindById(cardId)).Returns((CardViewModel)null);
 
             // Act
             var result = _controller.UpdateCard(cardId, updatedCard);
@@ -113,9 +113,9 @@
         {
             // Arrange
             var cardId = Guid.NewGuid();
-            var remainingCards = new List<Card>
+            var remainingCards = new List<CardViewModel>
             {
-                new Card { Id = Guid.NewGuid(), Titulo = "Test1", Conteudo = "Content1", Lista = "Doing" }
+                new CardViewModel { Id = Guid.NewGuid(), Titulo = "Test1", Conteudo = "Content1", Lista = "Doing" }
             };
             _mockCardService.Setup(s => s.GetAll()).Returns(remainingCards);
 

@@ -1,4 +1,4 @@
-﻿namespace Kanban.Domain.Tests.Validators
+﻿namespace Kanban.Application.Tests.Validators
 {
     using FluentValidation.Results;
     using Kanban.Domain.Entities;

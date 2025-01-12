@@ -1,6 +1,7 @@
 ﻿namespace webapi_kanban.Controllers
 {
-    using Kanban.Application;
+    using Kanban.Application.Interfaces;
+    using Kanban.Application.ViewModels;
     using Kanban.Domain.Entities;
     using Kanban.Domain.Interfaces.Service;
     using Microsoft.AspNetCore.Authorization;
@@ -11,26 +12,25 @@
     [Route("[controller]")]
     public class CardsController : ControllerBase
     {
-        private readonly ICardService _cardService;
+        private readonly ICardAppService _cardAppService;
 
-        public CardsController(ICardService cardService)
+        public CardsController(ICardAppService cardAppService)
         {
-            _cardService = cardService;
+            _cardAppService = cardAppService;
         }
 
         [HttpGet]
         public IActionResult GetCards()
         {
-
-            return Ok(_cardService.GetAll());
+            return Ok(_cardAppService.GetAll());
         }
 
 
         [HttpPost]
-        public IActionResult CreateCard([FromBody] Card card)
+        public IActionResult CreateCard([FromBody] CardViewModel card)
         {
 
-            Result<Card> result = _cardService.Add(card);
+            var result = _cardAppService.Add(card);
 
             if (result.Success)
             {
@@ -42,9 +42,9 @@
         }
 
         [HttpPut("{id}")]
-        public IActionResult UpdateCard(Guid id, [FromBody] Card card)
+        public IActionResult UpdateCard(Guid id, [FromBody] CardViewModel card)
         {
-            var existingCard = _cardService.FindById(id);
+            var existingCard = _cardAppService.FindById(id);
 
 
             if (existingCard == null)
@@ -61,7 +61,7 @@
             existingCard.Conteudo = card.Conteudo;
             existingCard.Lista = card.Lista;
 
-            Result<Card> result = _cardService.Update(existingCard);
+            Result<CardViewModel> result = _cardAppService.Update(existingCard);
 
             if (result.Success)
             {
@@ -74,9 +74,9 @@
         [HttpDelete("{id}")]
         public IActionResult DeleteCard(Guid id)
         {
-            _cardService.Delete(id);
+            _cardAppService.Delete(id);
 
-            return Ok(_cardService.GetAll()); ;
+            return Ok(_cardAppService.GetAll()); ;
         }
     }
 }
