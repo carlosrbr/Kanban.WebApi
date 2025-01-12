@@ -1,75 +1,80 @@
 ﻿namespace webapi_kanban.Controllers
 {
-    using KanbanWebApi.Data;
+    using Kanban.Application;
+    using Kanban.Domain.Entities;
+    using Kanban.Domain.Interfaces.Service;
     using Microsoft.AspNetCore.Mvc;
-    using webapi_kanban.dto;
 
     [ApiController]
     [Route("[controller]")]
     public class CardsController : ControllerBase
     {
-        private readonly KanbanDbContext _context;
+        private readonly ICardService _cardService;
 
-        public CardsController(KanbanDbContext context)
+        public CardsController(ICardService cardService)
         {
-            _context = context;
+            _cardService = cardService;
         }
 
         [HttpGet]
         public IActionResult GetCards()
         {
-            return Ok(_context.Cards);
+
+            return Ok(_cardService.GetAll());
         }
 
 
         [HttpPost]
-        public IActionResult CreateCard([FromBody] CardDto card)
+        public IActionResult CreateCard([FromBody] Card card)
         {
-            if (string.IsNullOrEmpty(card.Titulo) 
-                || string.IsNullOrEmpty(card.Conteudo) 
-                || string.IsNullOrEmpty(card.Lista))
+
+            Result<Card> result = _cardService.Add(card);
+
+            if (result.Success)
             {
-                return BadRequest();
+                return CreatedAtAction(nameof(GetCards), new { id = result.Model.Id }, result.Model); ;
             }
-                
 
-            card.Id = Guid.NewGuid();
-            _context.Cards.Add(card);
-            _context.SaveChanges();
+            return BadRequest(result.Errors);
 
-            return CreatedAtAction(nameof(GetCards), new { id = card.Id }, card);
         }
 
         [HttpPut("{id}")]
-        public IActionResult UpdateCard(Guid id, [FromBody] CardDto card)
+        public IActionResult UpdateCard(Guid id, [FromBody] Card card)
         {
-            var existingCard = _context.Cards.Find(id);
+            var existingCard = _cardService.FindById(id);
+
+
             if (existingCard == null)
             {
                 return NotFound();
+            }
+
+            if (existingCard.Id == card.Id)
+            {
+                return BadRequest();
             }
 
             existingCard.Titulo = card.Titulo;
             existingCard.Conteudo = card.Conteudo;
             existingCard.Lista = card.Lista;
 
-            _context.SaveChanges();
-            return Ok(existingCard);
+            Result<Card> result = _cardService.Update(existingCard);
+
+            if (result.Success)
+            {
+                return Ok(result.Model); ;
+            }
+
+            return BadRequest(result.Errors);
         }
 
         [HttpDelete("{id}")]
         public IActionResult DeleteCard(Guid id)
         {
-            var card = _context.Cards.Find(id);
-            if (card == null)
-            {
-                return NotFound();
-            }
+            _cardService.Delete(id);
 
-            _context.Cards.Remove(card);
-            _context.SaveChanges();
-
-            return Ok(_context.Cards);
+            return Ok(_cardService.GetAll()); ;
         }
     }
 }

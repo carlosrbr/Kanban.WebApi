@@ -19,4 +19,10 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Kanban.Application\Kanban.Application.csproj" />
+    <ProjectReference Include="..\Kanban.Domain\Kanban.Domain.csproj" />
+    <ProjectReference Include="..\Kanban.Infrastructure\Kanban.Infrastructure.Data.csproj" />
+  </ItemGroup>
+
 </Project>

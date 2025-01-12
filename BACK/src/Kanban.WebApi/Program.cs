@@ -2,7 +2,14 @@
 namespace webapi_kanban
 {
     using DotNetEnv;
-    using KanbanWebApi.Data;
+    using FluentValidation;
+    using Kanban.Application;
+    using Kanban.Domain.Entities;
+    using Kanban.Domain.Interfaces.Repository;
+    using Kanban.Domain.Interfaces.Service;
+    using Kanban.Domain.Validators;
+    using Kanban.Infrastructure.Data.Context;
+    using Kanban.Infrastructure.Data.Repository;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.IdentityModel.Tokens;
@@ -38,6 +45,10 @@ namespace webapi_kanban
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+            builder.Services.AddScoped<ICardService, CardService>();
+            builder.Services.AddScoped<ICardRepository, CardRepository>();
+            builder.Services.AddScoped<IValidator<Card>, CardValidator>();
+
 
             // Configurar serviços
             builder.Services.AddAuthentication(options =>
@@ -58,10 +69,6 @@ namespace webapi_kanban
             });
 
             var app = builder.Build();
-
-
-            var scope = app.Services.CreateScope();
-           var k =  scope.ServiceProvider.GetService<KanbanDbContext>();
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
