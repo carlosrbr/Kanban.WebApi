@@ -6,6 +6,7 @@ namespace webapi_kanban
     using Kanban.Application;
     using Kanban.Application.AutoMapperProfile;
     using Kanban.Application.Interfaces;
+    using Kanban.Application.ViewModels;
     using Kanban.Domain.Entities;
     using Kanban.Domain.Interfaces.Repository;
     using Kanban.Domain.Interfaces.Service;
@@ -50,7 +51,7 @@ namespace webapi_kanban
             builder.Services.AddScoped<ICardService, CardService>();
             builder.Services.AddScoped<ICardAppService, CardAppService>(); 
             builder.Services.AddScoped<ICardRepository, CardRepository>();
-            builder.Services.AddScoped<IValidator<Card>, CardValidator>();
+            builder.Services.AddScoped<IValidator<CardViewModel>, CardValidator>();
             builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 

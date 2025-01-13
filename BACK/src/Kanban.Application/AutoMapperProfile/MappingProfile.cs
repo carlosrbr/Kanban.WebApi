@@ -8,7 +8,9 @@
     {
         public MappingProfile()
         {
-            CreateMap<Card, CardViewModel>().ReverseMap();
+            CreateMap<Card, CardViewModel>();
+            CreateMap<CardViewModel, Card>()
+            .ConstructUsing(src => new Card(src.Id, src.Titulo, src.Conteudo, src.Lista));
         }
     }
 }

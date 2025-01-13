@@ -1,6 +1,7 @@
 ﻿namespace Kanban.Application.Tests.Validators
 {
     using FluentValidation.Results;
+    using Kanban.Application.ViewModels;
     using Kanban.Domain.Entities;
     using Kanban.Domain.Validators;
     using Xunit;
@@ -18,7 +19,7 @@
         public void Should_Have_Error_When_Id_Is_Empty()
         {
             // Arrange
-            var card = new Card { Id = Guid.Empty, Titulo = "Valid Title", Conteudo = "Valid Content", Lista = "Doing" };
+            var card = new CardViewModel { Titulo = "Valid Title", Conteudo = "Valid Content", Lista = "ToDo" };
 
             // Act
             ValidationResult result = _validator.Validate(card);
@@ -29,10 +30,10 @@
         }
 
         [Fact]
-        public void Should_Not_Have_Error_When_Id_Is_Valid()
+        public void Should_Not_Have_Error_When_Card_Is_Valid()
         {
             // Arrange
-            var card = new Card { Id = Guid.NewGuid(), Titulo = "Valid Title", Conteudo = "Valid Content", Lista = "Doing" };
+            var card = new CardViewModel { Id = Guid.NewGuid(), Titulo = "Valid Title", Conteudo = "Valid Content", Lista = "ToDo" };
 
             // Act
             ValidationResult result = _validator.Validate(card);
@@ -45,10 +46,10 @@
         public void Should_Have_Error_When_Titulo_Is_Empty()
         {
             // Arrange
-            var card = new Card { Id = Guid.NewGuid(), Titulo = string.Empty, Conteudo = "Valid Content", Lista = "ToDo" };
+            var cardViewModel = new CardViewModel { Titulo = string.Empty, Conteudo = "Valid Content", Lista = "ToDo" };
 
             // Act
-            ValidationResult result = _validator.Validate(card);
+            ValidationResult result = _validator.Validate(cardViewModel);
 
             // Assert
             Assert.False(result.IsValid);
@@ -59,10 +60,10 @@
         public void Should_Have_Error_When_Titulo_Is_Too_Short()
         {
             // Arrange
-            var card = new Card { Id = Guid.NewGuid(), Titulo = "AA", Conteudo = "Valid Content", Lista = "ToDo" };
+            var cardViewModel = new CardViewModel { Titulo = "AA", Conteudo = "Valid Content", Lista = "ToDo" };
 
             // Act
-            ValidationResult result = _validator.Validate(card);
+            ValidationResult result = _validator.Validate(cardViewModel);
 
             // Assert
             Assert.False(result.IsValid);
@@ -70,23 +71,10 @@
         }
 
         [Fact]
-        public void Should_Not_Have_Error_When_Titulo_Is_Valid()
-        {
-            // Arrange
-            var card = new Card { Id = Guid.NewGuid(), Titulo = "Titulo1", Conteudo = "Valid Content", Lista = "ToDo" };
-
-            // Act
-            ValidationResult result = _validator.Validate(card);
-
-            // Assert
-            Assert.True(result.IsValid);
-        }
-
-        [Fact]
         public void Should_Have_Error_When_Conteudo_Is_Empty()
         {
             // Arrange
-            var card = new Card { Id = Guid.NewGuid(), Titulo = "Titulo", Conteudo = string.Empty, Lista = "ToDo" };
+            var card = new CardViewModel { Titulo = "Titulo", Conteudo = string.Empty, Lista = "ToDo" };
 
             // Act
             ValidationResult result = _validator.Validate(card);
@@ -100,7 +88,7 @@
         public void Should_Have_Error_When_Conteudo_Is_Too_Short()
         {
             // Arrange
-            var card = new Card { Id = Guid.NewGuid(), Titulo = "Titulo", Conteudo = "CC", Lista = "ToDo" };
+            var card = new CardViewModel { Titulo = "Titulo", Conteudo = "CC", Lista = "ToDo" };
 
             // Act
             ValidationResult result = _validator.Validate(card);
@@ -110,19 +98,6 @@
             Assert.Contains(result.Errors, e => e.PropertyName == "Conteudo" && e.ErrorMessage == "Conteudo deve ter ao meno 3 caracteres.");
         }
 
-        [Fact]
-        public void Should_Not_Have_Error_When_Conteudo_Is_Valid()
-        {
-            // Arrange
-            var card = new Card { Id = Guid.NewGuid(), Titulo = "Titulo", Conteudo = "Valid Content", Lista = "ToDo" };
-
-            // Act
-            ValidationResult result = _validator.Validate(card);
-
-            // Assert
-            Assert.True(result.IsValid);
-        }
-
         [Theory]
         [InlineData("Doing")]
         [InlineData("ToDo")]
@@ -130,7 +105,7 @@
         public void Should_Not_Have_Error_When_Lista_Is_Valid(string lista)
         {
             // Arrange
-            var card = new Card { Id = Guid.NewGuid(), Titulo = "Titulo", Conteudo = "Valid Content", Lista = lista };
+            var card = new CardViewModel { Id= Guid.NewGuid(), Titulo = "Titulo", Conteudo = "Valid Content", Lista = lista };
 
             // Act
             ValidationResult result = _validator.Validate(card);
@@ -146,10 +121,10 @@
         public void Should_Have_Error_When_Lista_Is_Invalid(string lista)
         {
             // Arrange
-            var card = new Card { Id = Guid.NewGuid(), Titulo = "Titulo", Conteudo = "Valid Content", Lista = lista };
+            var cardViewModel = new CardViewModel { Id = Guid.NewGuid(), Titulo = "Titulo", Conteudo = "Valid Content", Lista = lista };
 
             // Act
-            ValidationResult result = _validator.Validate(card);
+            ValidationResult result = _validator.Validate(cardViewModel);
 
             // Assert
             Assert.False(result.IsValid);

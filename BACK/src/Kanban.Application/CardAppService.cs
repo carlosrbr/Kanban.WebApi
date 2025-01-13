@@ -9,14 +9,15 @@
     using Kanban.Application.ViewModels;
     using Kanban.Domain.Entities;
     using Kanban.Domain.Interfaces.Service;
+    using Kanban.Domain.Validators;
 
     public class CardAppService : ICardAppService
     {
         private readonly ICardService _cardService;
         private readonly IMapper _mapper;
-        private readonly IValidator<Card> _cardValidator;
+        private readonly IValidator<CardViewModel> _cardValidator;
 
-        public CardAppService(ICardService cardService, IMapper mapper, IValidator<Card> cardValidator)
+        public CardAppService(ICardService cardService, IMapper mapper, IValidator<CardViewModel> cardValidator)
         {
             _cardService = cardService;
             _mapper = mapper;
@@ -25,10 +26,9 @@
 
         public Result<CardViewModel> Add(CardViewModel cardViewModel)
         {
-            var card = _mapper.Map<Card>(cardViewModel);
 
-            card.Id = Guid.NewGuid();
-            var validationResult = _cardValidator.Validate(card);
+            cardViewModel.Id = Guid.NewGuid();
+            var validationResult = _cardValidator.Validate(cardViewModel);
 
             if (!validationResult.IsValid)
             {
@@ -36,12 +36,16 @@
                 {
                     Success = false,
                     Errors = validationResult.Errors.Select(e => e.ErrorMessage).ToList(),
-                    Model = _mapper.Map<CardViewModel>(card)
+                    Model = cardViewModel
                 };
             }
 
             try
             {
+                var card = _mapper.Map<Card>(cardViewModel);
+
+                card.SetId(Guid.NewGuid());
+
                 _cardService.Add(card);
                 return new Result<CardViewModel> { Success = true, Model = _mapper.Map<CardViewModel>(card) };
             }
@@ -51,7 +55,7 @@
                 {
                     Success = false,
                     Errors = new List<string> { ex.Message },
-                    Model = _mapper.Map<CardViewModel>(card)
+                    Model = cardViewModel
                 };
             }
         }
@@ -92,9 +96,9 @@
         public Result<CardViewModel> Update(CardViewModel cardViewModel)
         {
 
-            var card = _mapper.Map<Card>(cardViewModel);
+          
 
-            var validationResult = _cardValidator.Validate(card);
+            var validationResult = _cardValidator.Validate(cardViewModel);
 
             if (!validationResult.IsValid)
             {
@@ -102,17 +106,18 @@
                 {
                     Success = false,
                     Errors = validationResult.Errors.Select(e => e.ErrorMessage).ToList(),
-                    Model = _mapper.Map<CardViewModel>(card)
+                    Model = cardViewModel
                 };
             }
 
             try
             {
+                var card = _mapper.Map<Card>(cardViewModel);
                 var existingCard = _cardService.FindById(cardViewModel.Id);
 
-                existingCard.Lista = cardViewModel.Lista;
-                existingCard.Titulo = card.Titulo;
-                existingCard.Conteudo = card.Conteudo;
+                existingCard.SetLista(card.Lista);
+                existingCard.SetTitulo(card.Titulo);
+                existingCard.SetConteudo(card.Conteudo);
 
                 _cardService.Update(existingCard);
 
@@ -124,7 +129,7 @@
                 {
                     Success = false,
                     Errors = [ex.Message],
-                    Model = _mapper.Map<CardViewModel>(card)
+                    Model = cardViewModel
                 };
             } 
         }

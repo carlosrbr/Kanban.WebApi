@@ -17,7 +17,6 @@
 
         public Card Add(Card card)
         {
-            card.Id = Guid.NewGuid();
             _cardRepository.Add(card);
 
             return card;

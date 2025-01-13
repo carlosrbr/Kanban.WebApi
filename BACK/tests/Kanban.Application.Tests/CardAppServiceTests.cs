@@ -14,7 +14,7 @@
     public class CardAppServiceTests
     {
         private readonly Mock<ICardRepository> _mockCardRepository;
-        private readonly Mock<IValidator<Card>> _mockCardValidator;
+        private readonly Mock<IValidator<CardViewModel>> _mockCardValidator;
         private readonly Mock<ICardService> _cardService;
         private readonly Mock<IMapper> _mockMapper;
         private readonly CardAppService _cardAppService;
@@ -22,7 +22,7 @@
         public CardAppServiceTests()
         {
             _mockCardRepository = new Mock<ICardRepository>();
-            _mockCardValidator = new Mock<IValidator<Card>>();
+            _mockCardValidator = new Mock<IValidator<CardViewModel>>();
             _mockMapper = new Mock<IMapper>();
 
             // Assuming the CardService implementation is injected here
@@ -34,14 +34,12 @@
         public void Add_ValidCardViewModel_ReturnsSuccess()
         {
             // Arrange
-            var cardViewModel = new CardViewModel { Titulo = "Test Card", Conteudo = "Conteudo 1", Lista = "TODO" };
-            var card = new Card { Id = Guid.NewGuid(), Titulo = "Test Card", Conteudo = "Conteudo 1", Lista = "TODO" };
+            var cardViewModel = new CardViewModel { Titulo = "Test Card", Conteudo = "Conteudo 1", Lista = "ToDo" };
+            var card = new Card(Guid.NewGuid(), "Test Card", "Conteudo 1", "ToDo");
 
             _mockMapper.Setup(m => m.Map<Card>(cardViewModel)).Returns(card);
             _mockMapper.Setup(m => m.Map<CardViewModel>(card)).Returns(cardViewModel);
-            _mockCardValidator.Setup(v => v.Validate(card)).Returns(new ValidationResult());
-
-            //return new Result<CardViewModel> { Success = true, Model = _mapper.Map<CardViewModel>(card) };
+            _mockCardValidator.Setup(v => v.Validate(cardViewModel)).Returns(new ValidationResult());
 
             // Act
             var result = _cardAppService.Add(cardViewModel);
@@ -49,7 +47,7 @@
             // Assert
             Assert.True(result.Success);
             Assert.NotNull(result.Model);
-             _mockMapper.Verify(m => m.Map<CardViewModel>(It.IsAny<Card>()), Times.Once);
+            _mockMapper.Verify(m => m.Map<CardViewModel>(It.IsAny<Card>()), Times.Once);
         }
 
         [Fact]
@@ -57,14 +55,12 @@
         {
             // Arrange
             var cardViewModel = new CardViewModel { Titulo = "" };
-            var card = new Card { Titulo = "" };
             var validationFailures = new List<ValidationFailure>
             {
                 new ValidationFailure("Titulo", "Titulo é obrigatório.")
             };
 
-            _mockMapper.Setup(m => m.Map<Card>(cardViewModel)).Returns(card);
-            _mockCardValidator.Setup(v => v.Validate(card)).Returns(new ValidationResult(validationFailures));
+            _mockCardValidator.Setup(v => v.Validate(cardViewModel)).Returns(new ValidationResult(validationFailures));
 
             // Act
             var result = _cardAppService.Add(cardViewModel);
@@ -72,23 +68,21 @@
             // Assert
             Assert.False(result.Success);
             Assert.Contains("Titulo é obrigatório.", result.Errors);
-            _mockMapper.Verify(m => m.Map<CardViewModel>(It.IsAny<Card>()), Times.Once);
         }
 
         [Fact]
         public void Delete_ExistingCard_ReturnsSuccess()
         {
             // Arrange
-            var cardId = Guid.NewGuid();
-            var card = new Card { Id = cardId, Titulo = "Test Card" };
+            var card = new Card("Test Card", "Conteundo", "ToDo");
 
             var mockCardService = new Mock<ICardService>();
-            mockCardService.Setup(s => s.FindById(cardId)).Returns(card);
+            mockCardService.Setup(s => s.FindById(card.Id)).Returns(card);
 
             var cardAppService = new CardAppService(mockCardService.Object, _mockMapper.Object, _mockCardValidator.Object);
 
             // Act
-            var result = cardAppService.Delete(cardId);
+            var result = cardAppService.Delete(card.Id);
 
             // Assert
             Assert.True(result.Success);
@@ -118,11 +112,11 @@
         {
             // Arrange
             var cardViewModel = new CardViewModel { Titulo = "Test Card", Conteudo = "Conteudo 1", Lista = "ToDo" };
-            var card = new Card { Id = Guid.NewGuid(), Titulo = "Test Card", Conteudo = "Conteudo 1", Lista = "ToDo" };
+            var card = new Card("Test Card", "Conteudo 1", "ToDo");
 
             _mockMapper.Setup(m => m.Map<Card>(cardViewModel)).Returns(card);
             _mockMapper.Setup(m => m.Map<CardViewModel>(card)).Returns(cardViewModel);
-            _mockCardValidator.Setup(v => v.Validate(card)).Returns(new ValidationResult() { Errors= new List<ValidationFailure>()});
+            _mockCardValidator.Setup(v => v.Validate(cardViewModel)).Returns(new ValidationResult() { Errors = new List<ValidationFailure>() });
             _cardService.Setup(v => v.FindById(cardViewModel.Id)).Returns(card);
             // Act
             var result = _cardAppService.Update(cardViewModel);

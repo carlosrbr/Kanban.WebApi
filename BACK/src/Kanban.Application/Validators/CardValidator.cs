@@ -1,9 +1,10 @@
 ﻿namespace Kanban.Domain.Validators
 {
     using FluentValidation;
+    using Kanban.Application.ViewModels;
     using Kanban.Domain.Entities;
 
-    public class CardValidator : AbstractValidator<Card>
+    public class CardValidator : AbstractValidator<CardViewModel>
     {
         public CardValidator()
         {

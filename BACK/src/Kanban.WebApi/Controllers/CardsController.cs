@@ -2,8 +2,7 @@
 {
     using Kanban.Application.Interfaces;
     using Kanban.Application.ViewModels;
-    using Kanban.Domain.Entities;
-    using Kanban.Domain.Interfaces.Service;
+    using Kanban.Domain.Interfaces.Service;  
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
 
