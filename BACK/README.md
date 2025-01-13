@@ -4,8 +4,7 @@
 - **AutoMapper** para mapeamento de objetos  
 - **FluentValidation** para validação de modelos  
 - **Docker** para containerização  
-- **InMemory Database** (para desenvolvimento)  
-- **Dependency Injection**  
+- **InMemory Database**  
 
 ## Estrutura do Projeto  
 
@@ -62,12 +61,9 @@ O projeto segue as boas práticas de **DDD (Domain-Driven Design)**, organizado n
     A aplicação estará disponível em: [http://localhost:3000](http://localhost:3000).  
 
 ## Melhorias e Pendências  
-
-1. Substituir o banco de dados **InMemory** por **SQL** configurado no `docker-compose`.  
-2. Aplicar as **migrations** ao banco de dados.  
-3. Corrigir o `docker-compose` do back-end: o pacote `Microsoft.AspNetCore.Authentication.JwtBearer` causa erro em runtime devido à falta da biblioteca `System.IdentityModel.Tokens.Jwt`.  
-4. Implementar testes de integração.  
-5. mover as credencias do .env para o appsetting.json
+1. Corrigir o `docker-compose` do backend: o pacote `Microsoft.AspNetCore.Authentication.JwtBearer` causa erro em runtime devido à falta da biblioteca `System.IdentityModel.Tokens.Jwt`.  
+2. Implementar testes de integração.  
+3. Mover as credencias do .env para o appsetting.json
 
 ### Observações  
 
