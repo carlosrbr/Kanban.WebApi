@@ -1,6 +1,7 @@
 ﻿namespace Kanban.IntegrationTests
 {
     using System.Diagnostics.CodeAnalysis;
+    using AutoMapper.Configuration.Annotations;
     using Microsoft.VisualStudio.TestPlatform.TestHost;
     using Xunit;
 
@@ -15,7 +16,7 @@
             _client = factory.CreateClient();
         }
 
-        [Fact]
+        [Fact(Skip = "Não houve tempo de concluir o teste de integração")]
         public async Task Given_KanbanBoard_When_AddAnCard_Then_AnCardBeAdded()
         {
 

@@ -7,7 +7,6 @@ namespace webapi_kanban
     using Kanban.Application.AutoMapperProfile;
     using Kanban.Application.Interfaces;
     using Kanban.Application.ViewModels;
-    using Kanban.Domain.Entities;
     using Kanban.Domain.Interfaces.Repository;
     using Kanban.Domain.Interfaces.Service;
     using Kanban.Domain.Validators;
